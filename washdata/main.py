@@ -1,8 +1,6 @@
 # -*- coding:utf-8 -*-
 # coding:utf-8
-
-import requests
-from bs4 import BeautifulSoup
+import jieba
 import sys
 import json
 import re
@@ -54,6 +52,21 @@ class washData(object):
         print RegString+"匹配执行完毕"
         filehandle.close()
 
+    def cutword(self):
+        oldfile = open("content.txt","r+")
+        content = oldfile.readlines()
+        filehandle = open("content.segment.txt","w+")
+        # 清洗url
+
+        for eachLine in content:
+            segList = jieba.cut(eachLine)
+            result = " ".join(segList)
+            print  result
+            filehandle.write(result)
+
+        filehandle.close()
+
+
 
 
 
@@ -69,17 +82,21 @@ regLocation = re.compile("\[位置\].*")
 # 表情信息
 regExpress = re.compile("\[.*]")
 # 删除废弃微博
-regDelete = re.compile("抱歉.*")
-washData.wash(regMail,"邮箱")
-washData.wash(regHtml,"html特殊编码正则")
-washData.wash(regUrl,"url正则")
-washData.wash(regLocation,"位置信息")
-washData.wash(regExpress,"表情信息")
-washData.wash(regDelete,"废弃微博")
-# 保留中文字符串
+# regDelete = re.compile("抱歉.*")
+# washData.wash(regMail,"邮箱")
+# washData.wash(regHtml,"html特殊编码正则")
+# washData.wash(regUrl,"url正则")
+# washData.wash(regLocation,"位置信息")
+# washData.wash(regExpress,"表情信息")
+# washData.wash(regDelete,"废弃微博")
+# # 保留中文字符串
 xx=u"([\u4e00-\u9fa5]+)"
 pattern = re.compile(xx)
 washData.saveChinese(pattern,"中文字符")
+washData.cutword()
+
+
+
 
 # source = "s2f程序员杂志一2d3程序员杂志二2d3程序员杂志三2d3程序员杂志四2d3"
 # temp = source.decode('utf8')
